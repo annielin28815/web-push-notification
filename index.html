@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <title>Simply Notify</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/reset.css">
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" src="/css/reset.css">
+  <link rel="stylesheet" src="/css/style.css">
 </head>
 <body>
   <div class="wrapper">
@@ -16,6 +16,8 @@
       </header>
       
       <!-- Content goes here -->
+      <button id="sign-in">Sign In</button>
+      <button id="sign-out">Sign Out</button>
     </main>
 
     <footer>
@@ -24,9 +26,55 @@
   </div>
 
   <!-- Firebase SDK -->
-  <script src="/__/firebase/4.1.3/firebase.js"></script>
-  <script src="/__/firebase/init.js"></script>
+  <script src="/__/firebase/4.1.3/firebase.js?useEmulator=true"></script>
+  <script src="/__/firebase/init.js?useEmulator=true"></script>
 
-  <script src="/js/main.js"></script>
+  <!-- <script type="javascript" src="/js/main.js" charset="utf-8"></script> -->
+  <script>
+    
+    /* ========================
+      Variables
+    ======================== */
+
+    const FIREBASE_AUTH = firebase.auth();
+    const FIREBASE_MESSAGING = firebase.messaging();
+    const FIREBASE_DATABASE = firebase.database();
+    const signInButton = document.getElementById('sign-in');
+    const signOutButton = document.getElementById('sign-out');
+
+    /* ========================
+      Event Listeners
+    ======================== */
+
+    signInButton.addEventListener('click', signIn);
+    signOutButton.addEventListener("click", signOut);
+
+    FIREBASE_AUTH.onAuthStateChanged(handleAuthStateChanged);
+
+    /* ========================
+      Functions
+    ======================== */
+
+    function signIn() {
+      FIREBASE_AUTH.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    }
+
+    function signOut() {
+      FIREBASE_AUTH.signOut();
+    }
+
+    function handleAuthStateChanged(user) {
+      if (user) {
+        console.log('user =>', user);
+        signInButton.setAttribute("hidden", "true");
+        signOutButton.removeAttribute("hidden");
+      } else {
+        console.log('no user =>', 'no user');
+        signOutButton.setAttribute("hidden", "true");
+        signInButton.removeAttribute("hidden");
+      }
+    }
+
+  </script>
 </body>
 </html>
